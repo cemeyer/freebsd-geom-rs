@@ -1,0 +1,898 @@
+<mesh>
+  <class id="0xffffffff8195f290">
+    <name>FD</name>
+  </class>
+  <class id="0xffffffff818f5bf8">
+    <name>RAID</name>
+  </class>
+  <class id="0xffffffff818f29d8">
+    <name>DISK</name>
+    <geom id="0xfffff8001b561c00">
+      <class ref="0xffffffff818f29d8"/>
+      <name>ada0</name>
+      <rank>1</rank>
+      <config>
+      </config>
+	<provider id="0xfffff8001b561b00">
+	  <geom ref="0xfffff8001b561c00"/>
+	  <mode>r1w1e3</mode>
+	  <name>ada0</name>
+	  <mediasize>1000204886016</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>0</stripeoffset>
+	  <config>
+	    <fwheads>16</fwheads>
+	    <fwsectors>63</fwsectors>
+	    <rotationrate>0</rotationrate>
+	    <ident>XXXXXXXXXXXXXXX</ident>
+	    <lunid>YYYYYYYYYYYYYYYY</lunid>
+	    <descr>ZZZZZZZZZZZZZZZZZZZZZZZ</descr>
+	  </config>
+	</provider>
+    </geom>
+    <geom id="0xfffff8001b62d300">
+      <class ref="0xffffffff818f29d8"/>
+      <name>nvd1</name>
+      <rank>1</rank>
+      <config>
+      </config>
+	<provider id="0xfffff8001b62d200">
+	  <geom ref="0xfffff8001b62d300"/>
+	  <mode>r2w2e5</mode>
+	  <name>nvd1</name>
+	  <mediasize>1024209543168</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>0</stripeoffset>
+	  <config>
+	    <fwheads>0</fwheads>
+	    <fwsectors>0</fwsectors>
+	    <rotationrate>0</rotationrate>
+	    <ident>AAAAAAAAAAAAAAAA</ident>
+	    <lunid>BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB</lunid>
+	    <descr>CCCCCCCCCCCCCCCCCCC</descr>
+	  </config>
+	</provider>
+    </geom>
+    <geom id="0xfffff80494760c00">
+      <class ref="0xffffffff818f29d8"/>
+      <name>nvd0</name>
+      <rank>1</rank>
+      <config>
+      </config>
+	<provider id="0xfffff80494760b00">
+	  <geom ref="0xfffff80494760c00"/>
+	  <mode>r1w1e3</mode>
+	  <name>nvd0</name>
+	  <mediasize>500107862016</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>0</stripeoffset>
+	  <config>
+	    <fwheads>0</fwheads>
+	    <fwsectors>0</fwsectors>
+	    <rotationrate>0</rotationrate>
+	    <ident>DDDDDDDDDDDDDDD</ident>
+	    <lunid>EEEEEEEEEEEEEEEE</lunid>
+	    <descr>FFFFFFFFFFFFFFFFFFFFFFFFF</descr>
+	  </config>
+	</provider>
+    </geom>
+  </class>
+  <class id="0xffffffff818f26c8">
+    <name>DEV</name>
+    <geom id="0xfffff8001b561200">
+      <class ref="0xffffffff818f26c8"/>
+      <name>gpt-partition-1</name>
+      <rank>4</rank>
+	<consumer id="0xfffff8001b53f480">
+	  <geom ref="0xfffff8001b561200"/>
+	  <provider ref="0xfffff8001b561000"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff8001b6d5e00">
+      <class ref="0xffffffff818f26c8"/>
+      <name>ada0p1</name>
+      <rank>3</rank>
+	<consumer id="0xfffff8001b53f800">
+	  <geom ref="0xfffff8001b6d5e00"/>
+	  <provider ref="0xfffff8001b561700"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff80003fde100">
+      <class ref="0xffffffff818f26c8"/>
+      <name>ada0</name>
+      <rank>2</rank>
+	<consumer id="0xfffff8001b53fa80">
+	  <geom ref="0xfffff80003fde100"/>
+	  <provider ref="0xfffff8001b561b00"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff8001b62bc00">
+      <class ref="0xffffffff818f26c8"/>
+      <name>gpt-partition-2</name>
+      <rank>4</rank>
+	<consumer id="0xfffff8001b53fe00">
+	  <geom ref="0xfffff8001b62bc00"/>
+	  <provider ref="0xfffff8001b62ba00"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff8001b62a400">
+      <class ref="0xffffffff818f26c8"/>
+      <name>gpt-partition-5</name>
+      <rank>4</rank>
+	<consumer id="0xfffff8001b53ff00">
+	  <geom ref="0xfffff8001b62a400"/>
+	  <provider ref="0xfffff8001b62a100"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff8001b62aa00">
+      <class ref="0xffffffff818f26c8"/>
+      <name>nvd1p2</name>
+      <rank>3</rank>
+	<consumer id="0xfffff8001b542400">
+	  <geom ref="0xfffff8001b62aa00"/>
+	  <provider ref="0xfffff8001b62a900"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff8001b62d100">
+      <class ref="0xffffffff818f26c8"/>
+      <name>nvd1p1</name>
+      <rank>3</rank>
+	<consumer id="0xfffff8001b542480">
+	  <geom ref="0xfffff8001b62d100"/>
+	  <provider ref="0xfffff8001b62ab00"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff8001b62d000">
+      <class ref="0xffffffff818f26c8"/>
+      <name>nvd1</name>
+      <rank>2</rank>
+	<consumer id="0xfffff8001b542700">
+	  <geom ref="0xfffff8001b62d000"/>
+	  <provider ref="0xfffff8001b62d200"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff804947b3700">
+      <class ref="0xffffffff818f26c8"/>
+      <name>gptid/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa</name>
+      <rank>4</rank>
+	<consumer id="0xfffff804947a8e00">
+	  <geom ref="0xfffff804947b3700"/>
+	  <provider ref="0xfffff804947b3500"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff804947b3a00">
+      <class ref="0xffffffff818f26c8"/>
+      <name>gpt-partition-4</name>
+      <rank>4</rank>
+	<consumer id="0xfffff804947a8e80">
+	  <geom ref="0xfffff804947b3a00"/>
+	  <provider ref="0xfffff804947b3800"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff804947b3d00">
+      <class ref="0xffffffff818f26c8"/>
+      <name>gptid/bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb</name>
+      <rank>4</rank>
+	<consumer id="0xfffff804947a8f00">
+	  <geom ref="0xfffff804947b3d00"/>
+	  <provider ref="0xfffff804947b3b00"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff804947b2100">
+      <class ref="0xffffffff818f26c8"/>
+      <name>gpt-partition-6</name>
+      <rank>4</rank>
+	<consumer id="0xfffff804947ab000">
+	  <geom ref="0xfffff804947b2100"/>
+	  <provider ref="0xfffff804947b3e00"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff804947b2a00">
+      <class ref="0xffffffff818f26c8"/>
+      <name>gpt-partition-3</name>
+      <rank>4</rank>
+	<consumer id="0xfffff804947ab180">
+	  <geom ref="0xfffff804947b2a00"/>
+	  <provider ref="0xfffff804947b2800"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff804947b2d00">
+      <class ref="0xffffffff818f26c8"/>
+      <name>msdosfs/EFI</name>
+      <rank>4</rank>
+	<consumer id="0xfffff804947ab200">
+	  <geom ref="0xfffff804947b2d00"/>
+	  <provider ref="0xfffff804947b2b00"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff804947b5100">
+      <class ref="0xffffffff818f26c8"/>
+      <name>gptid/cccccccc-cccc-cccc-cccc-cccccccccccc</name>
+      <rank>4</rank>
+	<consumer id="0xfffff804947ab280">
+	  <geom ref="0xfffff804947b5100"/>
+	  <provider ref="0xfffff804947b2e00"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff804947b5500">
+      <class ref="0xffffffff818f26c8"/>
+      <name>gpt/freebsd-efi</name>
+      <rank>4</rank>
+	<consumer id="0xfffff804947ab300">
+	  <geom ref="0xfffff804947b5500"/>
+	  <provider ref="0xfffff804947b5200"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff804947b5b00">
+      <class ref="0xffffffff818f26c8"/>
+      <name>nvd0p4</name>
+      <rank>3</rank>
+	<consumer id="0xfffff804947ab700">
+	  <geom ref="0xfffff804947b5b00"/>
+	  <provider ref="0xfffff804947b5a00"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff804947b5d00">
+      <class ref="0xffffffff818f26c8"/>
+      <name>nvd0p3</name>
+      <rank>3</rank>
+	<consumer id="0xfffff804947ab900">
+	  <geom ref="0xfffff804947b5d00"/>
+	  <provider ref="0xfffff804947b5c00"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff804947b4000">
+      <class ref="0xffffffff818f26c8"/>
+      <name>nvd0p2</name>
+      <rank>3</rank>
+	<consumer id="0xfffff804947abb00">
+	  <geom ref="0xfffff804947b4000"/>
+	  <provider ref="0xfffff804947b5e00"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff80494760a00">
+      <class ref="0xffffffff818f26c8"/>
+      <name>nvd0p1</name>
+      <rank>3</rank>
+	<consumer id="0xfffff804947abb80">
+	  <geom ref="0xfffff80494760a00"/>
+	  <provider ref="0xfffff804947b4100"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff80494760900">
+      <class ref="0xffffffff818f26c8"/>
+      <name>nvd0</name>
+      <rank>2</rank>
+	<consumer id="0xfffff8048300a880">
+	  <geom ref="0xfffff80494760900"/>
+	  <provider ref="0xfffff80494760b00"/>
+	  <mode>r0w0e0</mode>
+	</consumer>
+    </geom>
+  </class>
+  <class id="0xffffffff818f48a8">
+    <name>PART</name>
+    <geom id="0xfffff8001b561900">
+      <class ref="0xffffffff818f48a8"/>
+      <name>ada0</name>
+      <rank>2</rank>
+      <config>
+	<scheme>GPT</scheme>
+	<entries>128</entries>
+	<first>40</first>
+	<last>1953525127</last>
+	<fwsectors>63</fwsectors>
+	<fwheads>16</fwheads>
+	<state>OK</state>
+	<modified>false</modified>
+      </config>
+	<consumer id="0xfffff8001b53fa00">
+	  <geom ref="0xfffff8001b561900"/>
+	  <provider ref="0xfffff8001b561b00"/>
+	  <mode>r1w1e3</mode>
+	  <config>
+	  </config>
+	</consumer>
+	<provider id="0xfffff8001b561700">
+	  <geom ref="0xfffff8001b561900"/>
+	  <mode>r1w1e2</mode>
+	  <name>ada0p1</name>
+	  <mediasize>1000204845056</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>20480</stripeoffset>
+	  <config>
+	    <start>40</start>
+	    <end>1953525127</end>
+	    <index>1</index>
+	    <type>freebsd-ufs</type>
+	    <offset>20480</offset>
+	    <length>1000204845056</length>
+	    <label>partition-1</label>
+	    <rawtype>516e7cb6-6ecf-11d6-8ff8-00022d09712b</rawtype>
+	    <rawuuid>uuid1</rawuuid>
+	    <efimedia>HD(1,GPT,UUID,0x28,0x74706d60)</efimedia>
+	  </config>
+	</provider>
+    </geom>
+    <geom id="0xfffff8001b62ae00">
+      <class ref="0xffffffff818f48a8"/>
+      <name>nvd1</name>
+      <rank>2</rank>
+      <config>
+	<scheme>GPT</scheme>
+	<entries>128</entries>
+	<first>40</first>
+	<last>2000409223</last>
+	<fwsectors>63</fwsectors>
+	<fwheads>255</fwheads>
+	<state>OK</state>
+	<modified>false</modified>
+      </config>
+	<consumer id="0xfffff8001b542680">
+	  <geom ref="0xfffff8001b62ae00"/>
+	  <provider ref="0xfffff8001b62d200"/>
+	  <mode>r2w2e5</mode>
+	  <config>
+	  </config>
+	</consumer>
+	<provider id="0xfffff8001b62a900">
+	  <geom ref="0xfffff8001b62ae00"/>
+	  <mode>r1w1e2</mode>
+	  <name>nvd1p2</name>
+	  <mediasize>989849763840</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>34359758848</stripeoffset>
+	  <config>
+	    <start>67108904</start>
+	    <end>2000409223</end>
+	    <index>2</index>
+	    <type>freebsd-ufs</type>
+	    <offset>34359758848</offset>
+	    <length>989849763840</length>
+	    <label>partition-2</label>
+	    <rawtype>516e7cb6-6ecf-11d6-8ff8-00022d09712b</rawtype>
+	    <rawuuid>uuid2</rawuuid>
+	    <efimedia>HD(2,GPT,UUID,0x4000028,0x733bd260)</efimedia>
+	  </config>
+	</provider>
+	<provider id="0xfffff8001b62ab00">
+	  <geom ref="0xfffff8001b62ae00"/>
+	  <mode>r1w1e1</mode>
+	  <name>nvd1p1</name>
+	  <mediasize>34359738368</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>20480</stripeoffset>
+	  <config>
+	    <start>40</start>
+	    <end>67108903</end>
+	    <index>1</index>
+	    <type>freebsd-swap</type>
+	    <offset>20480</offset>
+	    <length>34359738368</length>
+	    <label>partition-5</label>
+	    <rawtype>516e7cb5-6ecf-11d6-8ff8-00022d09712b</rawtype>
+	    <rawuuid>uuid3</rawuuid>
+	    <efimedia>HD(1,GPT,UUID,0x28,0x4000000)</efimedia>
+	  </config>
+	</provider>
+    </geom>
+    <geom id="0xfffff80494760800">
+      <class ref="0xffffffff818f48a8"/>
+      <name>nvd0</name>
+      <rank>2</rank>
+      <config>
+	<scheme>GPT</scheme>
+	<entries>128</entries>
+	<first>40</first>
+	<last>976773127</last>
+	<fwsectors>63</fwsectors>
+	<fwheads>255</fwheads>
+	<state>OK</state>
+	<modified>false</modified>
+      </config>
+	<consumer id="0xfffff804947abd80">
+	  <geom ref="0xfffff80494760800"/>
+	  <provider ref="0xfffff80494760b00"/>
+	  <mode>r1w1e3</mode>
+	  <config>
+	  </config>
+	</consumer>
+	<provider id="0xfffff804947b5a00">
+	  <geom ref="0xfffff80494760800"/>
+	  <mode>r0w0e0</mode>
+	  <name>nvd0p4</name>
+	  <mediasize>262144</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>500107578880</stripeoffset>
+	  <config>
+	    <start>976772615</start>
+	    <end>976773126</end>
+	    <index>4</index>
+	    <type>freebsd-boot</type>
+	    <offset>500107578880</offset>
+	    <length>262144</length>
+	    <label>partition-4</label>
+	    <rawtype>83bd6b9d-7f41-11dc-be0b-001560b84f0f</rawtype>
+	    <rawuuid>aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa</rawuuid>
+	    <efimedia>HD(4,GPT,aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa,0x3a385e07,0x200)</efimedia>
+	  </config>
+	</provider>
+	<provider id="0xfffff804947b5c00">
+	  <geom ref="0xfffff80494760800"/>
+	  <mode>r0w0e0</mode>
+	  <name>nvd0p3</name>
+	  <mediasize>8124087808</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>491983491072</stripeoffset>
+	  <config>
+	    <start>960905256</start>
+	    <end>976772614</end>
+	    <index>3</index>
+	    <type>freebsd-swap</type>
+	    <offset>491983491072</offset>
+	    <length>8124087808</length>
+	    <label>partition-6</label>
+	    <rawtype>516e7cb5-6ecf-11d6-8ff8-00022d09712b</rawtype>
+	    <rawuuid>bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb</rawuuid>
+	    <efimedia>HD(3,GPT,bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb,0x39464028,0xf21ddf)</efimedia>
+	  </config>
+	</provider>
+	<provider id="0xfffff804947b5e00">
+	  <geom ref="0xfffff80494760800"/>
+	  <mode>r1w1e2</mode>
+	  <name>nvd0p2</name>
+	  <mediasize>491773755392</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>209735680</stripeoffset>
+	  <config>
+	    <start>409640</start>
+	    <end>960905255</end>
+	    <index>2</index>
+	    <type>freebsd-ufs</type>
+	    <offset>209735680</offset>
+	    <length>491773755392</length>
+	    <label>partition-3</label>
+	    <rawtype>516e7cb6-6ecf-11d6-8ff8-00022d09712b</rawtype>
+	    <rawuuid>uuid5</rawuuid>
+	    <efimedia>HD(2,GPT,UUID,0x64028,0x39400000)</efimedia>
+	  </config>
+	</provider>
+	<provider id="0xfffff804947b4100">
+	  <geom ref="0xfffff80494760800"/>
+	  <mode>r0w0e0</mode>
+	  <name>nvd0p1</name>
+	  <mediasize>209715200</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>20480</stripeoffset>
+	  <config>
+	    <start>40</start>
+	    <end>409639</end>
+	    <index>1</index>
+	    <type>efi</type>
+	    <offset>20480</offset>
+	    <length>209715200</length>
+	    <label>freebsd-efi</label>
+	    <rawtype>c12a7328-f81f-11d2-ba4b-00a0c93ec93b</rawtype>
+	    <rawuuid>cccccccc-cccc-cccc-cccc-cccccccccccc</rawuuid>
+	    <efimedia>HD(1,GPT,cccccccc-cccc-cccc-cccc-cccccccccccc,0x28,0x64000)</efimedia>
+	  </config>
+	</provider>
+    </geom>
+  </class>
+  <class id="0xffffffff818f36d0">
+    <name>LABEL</name>
+    <geom id="0xfffff8001b561100">
+      <class ref="0xffffffff818f36d0"/>
+      <name>ada0p1</name>
+      <rank>3</rank>
+      <config>
+      </config>
+	<consumer id="0xfffff8001b53f700">
+	  <geom ref="0xfffff8001b561100"/>
+	  <provider ref="0xfffff8001b561700"/>
+	  <mode>r1w1e2</mode>
+	  <config>
+	  </config>
+	</consumer>
+	<provider id="0xfffff8001b561000">
+	  <geom ref="0xfffff8001b561100"/>
+	  <mode>r1w1e1</mode>
+	  <name>gpt-partition-1</name>
+	  <mediasize>1000204845056</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>20480</stripeoffset>
+	  <config>
+	    <index>0</index>
+	    <length>1000204845056</length>
+	    <seclength>1953525088</seclength>
+	    <offset>0</offset>
+	    <secoffset>0</secoffset>
+	  </config>
+	</provider>
+    </geom>
+    <geom id="0xfffff8001b62bb00">
+      <class ref="0xffffffff818f36d0"/>
+      <name>nvd1p2</name>
+      <rank>3</rank>
+      <config>
+      </config>
+	<consumer id="0xfffff8001b542200">
+	  <geom ref="0xfffff8001b62bb00"/>
+	  <provider ref="0xfffff8001b62a900"/>
+	  <mode>r1w1e2</mode>
+	  <config>
+	  </config>
+	</consumer>
+	<provider id="0xfffff8001b62ba00">
+	  <geom ref="0xfffff8001b62bb00"/>
+	  <mode>r1w1e1</mode>
+	  <name>gpt-partition-2</name>
+	  <mediasize>989849763840</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>34359758848</stripeoffset>
+	  <config>
+	    <index>0</index>
+	    <length>989849763840</length>
+	    <seclength>1933300320</seclength>
+	    <offset>0</offset>
+	    <secoffset>0</secoffset>
+	  </config>
+	</provider>
+    </geom>
+    <geom id="0xfffff8001b62a200">
+      <class ref="0xffffffff818f36d0"/>
+      <name>nvd1p1</name>
+      <rank>3</rank>
+      <config>
+      </config>
+	<consumer id="0xfffff8001b542380">
+	  <geom ref="0xfffff8001b62a200"/>
+	  <provider ref="0xfffff8001b62ab00"/>
+	  <mode>r1w1e1</mode>
+	  <config>
+	  </config>
+	</consumer>
+	<provider id="0xfffff8001b62a100">
+	  <geom ref="0xfffff8001b62a200"/>
+	  <mode>r1w1e0</mode>
+	  <name>gpt-partition-5</name>
+	  <mediasize>34359738368</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>20480</stripeoffset>
+	  <config>
+	    <index>0</index>
+	    <length>34359738368</length>
+	    <seclength>67108864</seclength>
+	    <offset>0</offset>
+	    <secoffset>0</secoffset>
+	  </config>
+	</provider>
+    </geom>
+    <geom id="0xfffff804947b3600">
+      <class ref="0xffffffff818f36d0"/>
+      <name>nvd0p4</name>
+      <rank>3</rank>
+      <config>
+      </config>
+	<consumer id="0xfffff804947ab480">
+	  <geom ref="0xfffff804947b3600"/>
+	  <provider ref="0xfffff804947b5a00"/>
+	  <mode>r0w0e0</mode>
+	  <config>
+	  </config>
+	</consumer>
+	<provider id="0xfffff804947b3500">
+	  <geom ref="0xfffff804947b3600"/>
+	  <mode>r0w0e0</mode>
+	  <name>gptid/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa</name>
+	  <mediasize>262144</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>500107578880</stripeoffset>
+	  <config>
+	    <index>0</index>
+	    <length>262144</length>
+	    <seclength>512</seclength>
+	    <offset>0</offset>
+	    <secoffset>0</secoffset>
+	  </config>
+	</provider>
+    </geom>
+    <geom id="0xfffff804947b3900">
+      <class ref="0xffffffff818f36d0"/>
+      <name>nvd0p4</name>
+      <rank>3</rank>
+      <config>
+      </config>
+	<consumer id="0xfffff804947ab500">
+	  <geom ref="0xfffff804947b3900"/>
+	  <provider ref="0xfffff804947b5a00"/>
+	  <mode>r0w0e0</mode>
+	  <config>
+	  </config>
+	</consumer>
+	<provider id="0xfffff804947b3800">
+	  <geom ref="0xfffff804947b3900"/>
+	  <mode>r0w0e0</mode>
+	  <name>gpt-partition-4</name>
+	  <mediasize>262144</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>500107578880</stripeoffset>
+	  <config>
+	    <index>0</index>
+	    <length>262144</length>
+	    <seclength>512</seclength>
+	    <offset>0</offset>
+	    <secoffset>0</secoffset>
+	  </config>
+	</provider>
+    </geom>
+    <geom id="0xfffff804947b3c00">
+      <class ref="0xffffffff818f36d0"/>
+      <name>nvd0p3</name>
+      <rank>3</rank>
+      <config>
+      </config>
+	<consumer id="0xfffff804947ab600">
+	  <geom ref="0xfffff804947b3c00"/>
+	  <provider ref="0xfffff804947b5c00"/>
+	  <mode>r0w0e0</mode>
+	  <config>
+	  </config>
+	</consumer>
+	<provider id="0xfffff804947b3b00">
+	  <geom ref="0xfffff804947b3c00"/>
+	  <mode>r0w0e0</mode>
+	  <name>gptid/bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb</name>
+	  <mediasize>8124087808</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>491983491072</stripeoffset>
+	  <config>
+	    <index>0</index>
+	    <length>8124087808</length>
+	    <seclength>15867359</seclength>
+	    <offset>0</offset>
+	    <secoffset>0</secoffset>
+	  </config>
+	</provider>
+    </geom>
+    <geom id="0xfffff804947b2000">
+      <class ref="0xffffffff818f36d0"/>
+      <name>nvd0p3</name>
+      <rank>3</rank>
+      <config>
+      </config>
+	<consumer id="0xfffff804947ab680">
+	  <geom ref="0xfffff804947b2000"/>
+	  <provider ref="0xfffff804947b5c00"/>
+	  <mode>r0w0e0</mode>
+	  <config>
+	  </config>
+	</consumer>
+	<provider id="0xfffff804947b3e00">
+	  <geom ref="0xfffff804947b2000"/>
+	  <mode>r0w0e0</mode>
+	  <name>gpt-partition-6</name>
+	  <mediasize>8124087808</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>491983491072</stripeoffset>
+	  <config>
+	    <index>0</index>
+	    <length>8124087808</length>
+	    <seclength>15867359</seclength>
+	    <offset>0</offset>
+	    <secoffset>0</secoffset>
+	  </config>
+	</provider>
+    </geom>
+    <geom id="0xfffff804947b2900">
+      <class ref="0xffffffff818f36d0"/>
+      <name>nvd0p2</name>
+      <rank>3</rank>
+      <config>
+      </config>
+	<consumer id="0xfffff804947ab880">
+	  <geom ref="0xfffff804947b2900"/>
+	  <provider ref="0xfffff804947b5e00"/>
+	  <mode>r1w1e2</mode>
+	  <config>
+	  </config>
+	</consumer>
+	<provider id="0xfffff804947b2800">
+	  <geom ref="0xfffff804947b2900"/>
+	  <mode>r1w1e1</mode>
+	  <name>gpt-partition-3</name>
+	  <mediasize>491773755392</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>209735680</stripeoffset>
+	  <config>
+	    <index>0</index>
+	    <length>491773755392</length>
+	    <seclength>960495616</seclength>
+	    <offset>0</offset>
+	    <secoffset>0</secoffset>
+	  </config>
+	</provider>
+    </geom>
+    <geom id="0xfffff804947b2c00">
+      <class ref="0xffffffff818f36d0"/>
+      <name>nvd0p1</name>
+      <rank>3</rank>
+      <config>
+      </config>
+	<consumer id="0xfffff804947ab980">
+	  <geom ref="0xfffff804947b2c00"/>
+	  <provider ref="0xfffff804947b4100"/>
+	  <mode>r0w0e0</mode>
+	  <config>
+	  </config>
+	</consumer>
+	<provider id="0xfffff804947b2b00">
+	  <geom ref="0xfffff804947b2c00"/>
+	  <mode>r0w0e0</mode>
+	  <name>msdosfs/EFI</name>
+	  <mediasize>209715200</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>20480</stripeoffset>
+	  <config>
+	    <index>0</index>
+	    <length>209715200</length>
+	    <seclength>409600</seclength>
+	    <offset>0</offset>
+	    <secoffset>0</secoffset>
+	  </config>
+	</provider>
+    </geom>
+    <geom id="0xfffff804947b5000">
+      <class ref="0xffffffff818f36d0"/>
+      <name>nvd0p1</name>
+      <rank>3</rank>
+      <config>
+      </config>
+	<consumer id="0xfffff804947aba00">
+	  <geom ref="0xfffff804947b5000"/>
+	  <provider ref="0xfffff804947b4100"/>
+	  <mode>r0w0e0</mode>
+	  <config>
+	  </config>
+	</consumer>
+	<provider id="0xfffff804947b2e00">
+	  <geom ref="0xfffff804947b5000"/>
+	  <mode>r0w0e0</mode>
+	  <name>gptid/cccccccc-cccc-cccc-cccc-cccccccccccc</name>
+	  <mediasize>209715200</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>20480</stripeoffset>
+	  <config>
+	    <index>0</index>
+	    <length>209715200</length>
+	    <seclength>409600</seclength>
+	    <offset>0</offset>
+	    <secoffset>0</secoffset>
+	  </config>
+	</provider>
+    </geom>
+    <geom id="0xfffff804947b5300">
+      <class ref="0xffffffff818f36d0"/>
+      <name>nvd0p1</name>
+      <rank>3</rank>
+      <config>
+      </config>
+	<consumer id="0xfffff804947aba80">
+	  <geom ref="0xfffff804947b5300"/>
+	  <provider ref="0xfffff804947b4100"/>
+	  <mode>r0w0e0</mode>
+	  <config>
+	  </config>
+	</consumer>
+	<provider id="0xfffff804947b5200">
+	  <geom ref="0xfffff804947b5300"/>
+	  <mode>r0w0e0</mode>
+	  <name>gpt/freebsd-efi</name>
+	  <mediasize>209715200</mediasize>
+	  <sectorsize>512</sectorsize>
+	  <stripesize>0</stripesize>
+	  <stripeoffset>20480</stripeoffset>
+	  <config>
+	    <index>0</index>
+	    <length>209715200</length>
+	    <seclength>409600</seclength>
+	    <offset>0</offset>
+	    <secoffset>0</secoffset>
+	  </config>
+	</provider>
+    </geom>
+  </class>
+  <class id="0xffffffff818f34f8">
+    <name>VFS</name>
+    <geom id="0xfffff80494739000">
+      <class ref="0xffffffff818f34f8"/>
+      <name>ffs.gpt-partition-2</name>
+      <rank>4</rank>
+	<consumer id="0xfffff804948c6300">
+	  <geom ref="0xfffff80494739000"/>
+	  <provider ref="0xfffff8001b62ba00"/>
+	  <mode>r1w1e1</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff80494765a00">
+      <class ref="0xffffffff818f34f8"/>
+      <name>ffs.gpt-partition-1</name>
+      <rank>4</rank>
+	<consumer id="0xfffff804948c6c80">
+	  <geom ref="0xfffff80494765a00"/>
+	  <provider ref="0xfffff8001b561000"/>
+	  <mode>r1w1e1</mode>
+	</consumer>
+    </geom>
+    <geom id="0xfffff80494736b00">
+      <class ref="0xffffffff818f34f8"/>
+      <name>ffs.gpt-partition-3</name>
+      <rank>4</rank>
+	<consumer id="0xfffff8049497d480">
+	  <geom ref="0xfffff80494736b00"/>
+	  <provider ref="0xfffff804947b2800"/>
+	  <mode>r1w1e1</mode>
+	</consumer>
+    </geom>
+  </class>
+  <class id="0xffffffff81956f98">
+    <name>SWAP</name>
+    <geom id="0xfffff8001b577600">
+      <class ref="0xffffffff81956f98"/>
+      <name>swap</name>
+      <rank>4</rank>
+	<consumer id="0xfffff8001b54ed00">
+	  <geom ref="0xfffff8001b577600"/>
+	  <provider ref="0xfffff8001b62a100"/>
+	  <mode>r1w1e0</mode>
+	</consumer>
+    </geom>
+  </class>
+  <class id="0xffffffff818f2bc8">
+    <name>Flashmap</name>
+  </class>
+  <class id="0xffffffff8187e930">
+    <name>MD</name>
+  </class>
+</mesh>
+
