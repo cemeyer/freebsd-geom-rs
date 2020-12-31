@@ -2,13 +2,21 @@ extern crate serde;
 
 //use serde::{de::Error, Deserialize, Deserializer};
 use serde::Deserialize;
+use quick_xml::DeError;
 
+/// A `Mesh` is the top-level structure representing a GEOM object graph.
+///
+/// The mesh contains objects from various classes, called "geoms."  `Geom`s represent things like
+/// disks, or disk partitions, or device nodes under `/dev` on FreeBSD systems.  They are related
+/// by references called "consumers" and "providers."
 #[derive(Debug, Deserialize, PartialEq)]
 pub struct Mesh {
     #[serde(rename = "class", default)]
     pub classes: Vec<Class>,
 }
 
+/// `Class` contains all of the objects ("geoms") and associated relationships ("consumers" and
+/// "providers") associated with the class.
 #[derive(Debug, Deserialize, PartialEq)]
 pub struct Class {
     // Ideally, deserialize directly to u64.  However, neither of these works:
@@ -21,6 +29,15 @@ pub struct Class {
     // libgeom(3) thinks Classes have config sections, but I don't see any.
 }
 
+/// A `Geom` is the essential object in a GEOM graph.
+///
+/// It can represent a disk (under the "DISK" class), or partition (under "PART"), or `/dev` device
+/// node (under "DEV"), as well as several other classes.
+///
+/// A geom is related to other geoms in a directed graph.  `Consumer` edges indicate that this geom
+/// depends on a lower-level (lower "`rank`") geom.  `Provider` edges indicate that this geom
+/// exposes an object to a higher-level object.  For example, a PART geom might "consume" a DISK
+/// geom ("ada0") and "provide" logical partition objects ("ada0p1", "ada0p2", etc.).
 #[derive(Debug, Deserialize, PartialEq)]
 pub struct Geom {
     pub id: String, // uintptr_t
@@ -35,12 +52,18 @@ pub struct Geom {
     pub providers: Vec<Provider>,
 }
 
+/// A `ClassRef` is just a logical pointer to a `Class`.
+///
+/// `ClassRef::ref_` references the same namespace as `Class::id`.
 #[derive(Debug, Deserialize, PartialEq)]
 pub struct ClassRef {
     #[serde(rename = "ref")]
     pub ref_: String, // uintptr_t
 }
 
+/// A set of key-value metadata associated with a specific `Geom`.
+///
+/// The semantics and available values vary depending on the class.
 #[derive(Debug, Deserialize, PartialEq)]
 pub struct GeomConfig {
     // PART
@@ -54,6 +77,12 @@ pub struct GeomConfig {
     pub modified: Option<bool>,
 }
 
+/// A pointer from one geom to a `Provider` of a lower-level geom.
+///
+/// In the logical directed graph, it is an out-edge.
+///
+/// It is associated with the `Geom` with `id` equal to `geom_ref.ref_`, and points to the
+/// `Provider` with `id` equal to `provider_ref.ref_`.
 #[derive(Debug, Deserialize, PartialEq)]
 pub struct Consumer {
     pub id: String, // uintptr_t
@@ -64,6 +93,11 @@ pub struct Consumer {
     pub mode: String,
 }
 
+/// A pointer into a geom from the `Consumer` of a higher-level geom.
+///
+/// In the logical directed graph, it is an in-edge.
+///
+/// It is associated with the `Geom` with `id` equal to `geom_ref.ref_`.
 #[derive(Debug, Deserialize, PartialEq)]
 pub struct Provider {
     pub id: String, // uintptr_t
@@ -80,6 +114,9 @@ pub struct Provider {
 
 // Ideally this would be some enum type based on the Class, but, ya know.  (serde(flatten) / enum
 // interaction doesn't seem flawless at this time.)
+/// A set of key-value metadata associated with a specific `Provider`.
+///
+/// The semantics and available values vary depending on the class.
 #[derive(Debug, Deserialize, PartialEq)]
 pub struct ProviderConfig {
     // DISK
@@ -107,16 +144,41 @@ pub struct ProviderConfig {
     pub secoffset: Option<u64>,
 }
 
+/// A `GeomRef` is just a logical pointer to a `Geom`.
+///
+/// `GeomRef::ref_` references the same namespace as `Geom::id`.
 #[derive(Debug, Deserialize, PartialEq)]
 pub struct GeomRef {
     #[serde(rename = "ref")]
     pub ref_: String, // uintptr_t
 }
 
+/// A `ProviderRef` is just a logical pointer to a `Provider`.
+///
+/// `ProviderRef::ref_` references the same namespace as `Provider::id`.
 #[derive(Debug, Deserialize, PartialEq)]
 pub struct ProviderRef {
     #[serde(rename = "ref")]
     pub ref_: String, // uintptr_t
+}
+
+/// Parse a GEOM XML string configuration into a geom::raw::Mesh structure.
+///
+/// # Arguments
+///
+/// * `xml` - A string slice of the contents of the `kern.geom.confxml` `sysctl` node from a
+///   FreeBSD system.
+///
+/// # Examples
+///
+/// ```
+/// use freebsd_geom as geom;
+///
+/// let mesh = geom::raw::parse_xml(r#"<mesh> ... </mesh>"#).unwrap();
+/// println!("The mesh has {} classes.", mesh.classes.len());
+/// ```
+pub fn parse_xml(xml: &str) -> Result<Mesh, DeError> {
+    return quick_xml::de::from_str::<Mesh>(xml);
 }
 
 #[cfg(test)]
