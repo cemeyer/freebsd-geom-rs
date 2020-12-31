@@ -1,7 +1,12 @@
 [package]
 name = "freebsd-geom"
+description = "A library for working with GEOM object graphs"
 version = "0.1.0"
 authors = ["Conrad Meyer <cem@FreeBSD.org>"]
+license = "MIT"
+categories = ["config", "database", "os::freebsd-apis", "parser-implementations"]
+keywords = ["freebsd", "geom", "graph", "api"]
+repository = "https://github.com/cemeyer/freebsd-geom-rs"
 edition = "2018"
 
 [profile.dev]
@@ -12,3 +17,6 @@ serde = { version = "~1.0.0", features = [ "derive" ] }
 serde-hex = "~0.1.0"
 sysctl = "~0.4.0"
 quick-xml = { version = "~0.20.0", features = [ "serialize" ] }
+
+[package.metadata.docs.rs]
+default-target = "x86_64-unknown-freebsd"
