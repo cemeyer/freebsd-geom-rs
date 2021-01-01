@@ -389,7 +389,10 @@ pub fn decode_graph(mesh: &raw::Mesh) -> Result<Graph, Error> {
     for (cid, pid) in &conprods {
         let rawcons = cons.get(&cid).ok_or(Error::GraphError)?;
         let rawprov = provs.get(&pid).ok_or(Error::GraphError)?;
-        if &rawcons.mode != &rawprov.mode {
+        // DEV geoms consume providers with access r0w0e0; allow it.
+        // I guess it is technically possible for non-zero consumers to share providers, in which
+        // case their access would sum to the provider's?  Maybe we should just track both values.
+        if &rawcons.mode != &rawprov.mode && &rawcons.mode != "r0w0e0" {
             return Err(Error::GraphError);
         }
 
@@ -434,6 +437,6 @@ mod tests {
     fn large_sample_decode() {
         let xml = include_str!("test/fullsample.xml");
         let rawmesh = raw::parse_xml(&xml).unwrap();
-        let g = graph::decode_graph(&rawmesh);
+        let g = graph::decode_graph(&rawmesh).unwrap();
     }
 }
