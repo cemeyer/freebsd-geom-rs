@@ -13,8 +13,11 @@ edition = "2018"
 opt-level = 2
 
 [dependencies]
+scan_fmt = "~0.2.5"
 serde = { version = "~1.0.0", features = [ "derive" ] }
 serde-hex = "~0.1.0"
+strum = "~0.20.0"
+strum_macros = "~0.20.1"
 sysctl = "~0.4.0"
 quick-xml = { version = "~0.20.0", features = [ "serialize" ] }
 

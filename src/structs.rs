@@ -181,6 +181,33 @@ pub fn parse_xml(xml: &str) -> Result<Mesh, DeError> {
     return quick_xml::de::from_str::<Mesh>(xml);
 }
 
+/// Returns a structure representing the raw GEOM mesh on the running system.
+///
+/// # Examples
+///
+/// ```
+/// use freebsd_geom as geom;
+/// use std::collections::BTreeMap;
+///
+/// fn myfoo() -> Result<(), geom::Error> {
+///     let mesh = geom::raw::get_mesh()?;
+///
+///     let mut count = BTreeMap::new();
+///     for g_class in &mesh.classes {
+///         count.insert(&g_class.name, g_class.geoms.len());
+///     }
+///     for (class_name, count) in &count {
+///         println!("class {}: {} geoms", class_name, count);
+///     }
+///     Ok(())
+/// }
+/// ```
+#[cfg(target_os = "freebsd")]
+pub fn get_mesh() -> Result<Mesh, crate::Error> {
+    let xml = crate::get_confxml().map_err(|e| crate::Error::Sysctl(e))?;
+    return parse_xml(&xml).map_err(|e| crate::Error::Decode(e));
+}
+
 #[cfg(test)]
 mod tests {
     use crate::structs;
