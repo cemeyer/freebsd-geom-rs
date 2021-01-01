@@ -5,21 +5,12 @@ extern crate sysctl;
 
 use sysctl::Sysctl;
 
-/// Wrapped error sources for the geom crate.
-pub enum Error {
-    Sysctl(sysctl::SysctlError),
-    Decode(quick_xml::DeError),
-    Parse(strum::ParseError),
-    Scan(scan_fmt::parse::ScanError),
-    Graph(graph::GraphError),
-}
-
 #[cfg(target_os = "freebsd")]
-fn get_confxml() -> Result<String, sysctl::SysctlError> {
+fn get_confxml() -> Result<String, Error> {
     const CTLNAME: &str = "kern.geom.confxml";
 
     let ctl = sysctl::Ctl::new(CTLNAME)?;
-    return ctl.value_string();
+    return Ok(ctl.value_string()?);
 }
 
 /// Returns a structure representing the GEOM graph on the running system.
@@ -53,7 +44,10 @@ mod tests_freebsd {
 }
 
 // reexport
-pub mod structs;
-pub use structs as raw;
+pub mod error;
 mod graph;
+pub mod structs;
+
+pub use error::Error;
+pub use structs as raw;
 pub use graph::Graph;

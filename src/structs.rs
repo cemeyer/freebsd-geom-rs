@@ -5,7 +5,8 @@ extern crate serde;
 
 //use serde::{de::Error, Deserialize, Deserializer};
 use serde::Deserialize;
-use quick_xml::DeError;
+
+use crate::Error as Error;
 
 /// A `Mesh` is the top-level structure representing a GEOM object graph.
 ///
@@ -180,8 +181,8 @@ pub struct ProviderRef {
 /// let mesh = geom::raw::parse_xml(r#"<mesh> ... </mesh>"#).unwrap();
 /// println!("The mesh has {} classes.", mesh.classes.len());
 /// ```
-pub fn parse_xml(xml: &str) -> Result<Mesh, DeError> {
-    return quick_xml::de::from_str::<Mesh>(xml);
+pub fn parse_xml(xml: &str) -> Result<Mesh, Error> {
+    return Ok(quick_xml::de::from_str::<Mesh>(xml)?);
 }
 
 /// Returns a structure representing the raw GEOM mesh on the running system.
@@ -206,9 +207,9 @@ pub fn parse_xml(xml: &str) -> Result<Mesh, DeError> {
 /// }
 /// ```
 #[cfg(target_os = "freebsd")]
-pub fn get_mesh() -> Result<Mesh, crate::Error> {
-    let xml = crate::get_confxml().map_err(|e| crate::Error::Sysctl(e))?;
-    return parse_xml(&xml).map_err(|e| crate::Error::Decode(e));
+pub fn get_mesh() -> Result<Mesh, Error> {
+    let xml = crate::get_confxml()?;
+    return Ok(parse_xml(&xml)?);
 }
 
 #[cfg(test)]

@@ -9,10 +9,7 @@
 use std::collections::{BTreeMap,BTreeSet};
 use std::str::FromStr;
 use strum_macros::{AsRefStr,EnumIter,EnumString};
-use crate::raw;
-
-/// Some internal graph invariant was violated.
-pub struct GraphError;
+use crate::{Error, raw};
 
 /// A `Geom` is the essential object in a GEOM graph.
 ///
@@ -25,6 +22,7 @@ pub struct GraphError;
 /// A geom is related to other geoms in a tree.  In this library, we call edges from child to
 /// parent geoms "outedges" and edges from parent geoms to child geoms "inedges".  In other GEOM
 /// documentation they are called "consumers" and "providers," respectively.
+#[derive(Debug)]
 pub struct Geom {
     pub class: GeomClass,
     /// The `Geom`'s name, such as "ada0".  Caveat: geom names are not unique.
@@ -37,7 +35,7 @@ pub struct Geom {
 }
 
 /// The class of a `Geom`.
-#[derive(Copy,Clone,Eq,PartialEq,AsRefStr,EnumIter,EnumString)]
+#[derive(Copy,Clone,Debug,Eq,PartialEq,AsRefStr,EnumIter,EnumString)]
 pub enum GeomClass {
     /// Floppy Disk
     FD,
@@ -59,7 +57,7 @@ pub enum GeomClass {
 }
 
 /// Specific partition schemes for `GeomClass::PART` geom `PartMetadata`.
-#[derive(AsRefStr,EnumIter,EnumString)]
+#[derive(AsRefStr,Debug,EnumIter,EnumString)]
 pub enum PartScheme {
     /// Apple Partition Map (historical)
     APM,
@@ -90,13 +88,14 @@ pub enum PartScheme {
 ///   other can be recovered.
 /// * EBR scheme: An internal inconsistency exists in EBR's metadata.
 /// * Any scheme: There is some internal inconsistency, such as overlapping partitions.
-#[derive(AsRefStr,EnumIter,EnumString)]
+#[derive(AsRefStr,Debug,EnumIter,EnumString)]
 pub enum PartState {
     CORRUPT,
     OK,
 }
 
 /// Metadata associated with `GeomClass::PART` `Geom`s.
+#[derive(Debug)]
 pub struct PartMetadata {
     /// The partitioning scheme
     scheme: PartScheme,
@@ -117,6 +116,7 @@ pub struct PartMetadata {
 }
 
 /// GEOM internal access reference counts
+#[derive(Debug)]
 pub struct Mode {
     read: u16,
     write: u16,
@@ -124,11 +124,10 @@ pub struct Mode {
 }
 
 impl std::str::FromStr for Mode {
-    type Err = crate::Error;
+    type Err = Error;
 
     fn from_str(s: &str) -> Result<Mode, Self::Err> {
-        let (r, w, e) = scan_fmt!(s, "r{d}w{d}e{d}", u16, u16, u16)
-            .map_err(|e| crate::Error::Scan(e))?;
+        let (r, w, e) = scan_fmt!(s, "r{d}w{d}e{d}", u16, u16, u16)?;
         return Ok(Mode {
             read: r,
             write: w,
@@ -142,7 +141,7 @@ impl std::str::FromStr for Mode {
 ///
 /// The enum variant depends on the `GeomClass` of the `Geom` associated with the "provider"
 /// represented by this `Edge`.
-#[derive(AsRefStr,EnumIter,EnumString)]
+#[derive(AsRefStr,Debug,EnumIter,EnumString)]
 pub enum EdgeMetadata {
     /// `EdgeMetadata::DISK` is metadata associated with the `Edge` between a `GeomClass::DISK`
     /// `Geom` and some lower `Geom` in the tree.
@@ -219,27 +218,27 @@ pub enum EdgeMetadata {
 }
 
 impl EdgeMetadata {
-    fn disk_from_raw(p: &raw::Provider) -> Result<Box<EdgeMetadata>, crate::Error> {
+    fn disk_from_raw(p: &raw::Provider) -> Result<Box<EdgeMetadata>, Error> {
         let raw = &p.config;
         Ok(Box::new(Self::DISK {
-            fwheads: raw.fwheads.ok_or(crate::Error::Graph(GraphError))?,
-            fwsectors: raw.fwsectors.ok_or(crate::Error::Graph(GraphError))?,
-            rotationrate: raw.rotationrate.ok_or(crate::Error::Graph(GraphError))?,
-            ident: raw.ident.as_ref().ok_or(crate::Error::Graph(GraphError))?.to_owned(),
-            lunid: raw.lunid.as_ref().ok_or(crate::Error::Graph(GraphError))?.to_owned(),
-            descr: raw.descr.as_ref().ok_or(crate::Error::Graph(GraphError))?.to_owned(),
+            fwheads: raw.fwheads.ok_or(Error::GraphError)?,
+            fwsectors: raw.fwsectors.ok_or(Error::GraphError)?,
+            rotationrate: raw.rotationrate.ok_or(Error::GraphError)?,
+            ident: raw.ident.as_ref().ok_or(Error::GraphError)?.to_owned(),
+            lunid: raw.lunid.as_ref().ok_or(Error::GraphError)?.to_owned(),
+            descr: raw.descr.as_ref().ok_or(Error::GraphError)?.to_owned(),
         }))
     }
 
-    fn part_from_raw(p: &raw::Provider) -> Result<Box<EdgeMetadata>, crate::Error> {
+    fn part_from_raw(p: &raw::Provider) -> Result<Box<EdgeMetadata>, Error> {
         let raw = &p.config;
         Ok(Box::new(Self::PART {
-            start: raw.start.ok_or(crate::Error::Graph(GraphError))?,
-            end: raw.end.ok_or(crate::Error::Graph(GraphError))?,
-            index: raw.index.ok_or(crate::Error::Graph(GraphError))?,
-            type_: raw.type_.as_ref().ok_or(crate::Error::Graph(GraphError))?.to_owned(),
-            offset: raw.offset.ok_or(crate::Error::Graph(GraphError))?,
-            length: raw.length.ok_or(crate::Error::Graph(GraphError))?,
+            start: raw.start.ok_or(Error::GraphError)?,
+            end: raw.end.ok_or(Error::GraphError)?,
+            index: raw.index.ok_or(Error::GraphError)?,
+            type_: raw.type_.as_ref().ok_or(Error::GraphError)?.to_owned(),
+            offset: raw.offset.ok_or(Error::GraphError)?,
+            length: raw.length.ok_or(Error::GraphError)?,
 
             label:       raw.label.as_ref().map(|v| v.to_owned()),
             rawtype:   raw.rawtype.as_ref().map(|v| v.to_owned()),
@@ -248,14 +247,14 @@ impl EdgeMetadata {
         }))
     }
 
-    fn label_from_raw(p: &raw::Provider) -> Result<Box<EdgeMetadata>, crate::Error> {
+    fn label_from_raw(p: &raw::Provider) -> Result<Box<EdgeMetadata>, Error> {
         let raw = &p.config;
         Ok(Box::new(Self::LABEL {
-            index: raw.index.ok_or(crate::Error::Graph(GraphError))?,
-            offset: raw.offset.ok_or(crate::Error::Graph(GraphError))?,
-            length: raw.length.ok_or(crate::Error::Graph(GraphError))?,
-            seclength: raw.seclength.ok_or(crate::Error::Graph(GraphError))?,
-            secoffset: raw.secoffset.ok_or(crate::Error::Graph(GraphError))?,
+            index: raw.index.ok_or(Error::GraphError)?,
+            offset: raw.offset.ok_or(Error::GraphError)?,
+            length: raw.length.ok_or(Error::GraphError)?,
+            seclength: raw.seclength.ok_or(Error::GraphError)?,
+            secoffset: raw.secoffset.ok_or(Error::GraphError)?,
         }))
     }
 }
@@ -263,6 +262,7 @@ impl EdgeMetadata {
 /// An `Edge` connects two `Geom`s in a tree.
 ///
 /// In GEOM terminology, it represents a Consumer-Provider pair.
+#[derive(Debug)]
 pub struct Edge {
     /// The name of the `Edge`, established by the "provider" (associated with the parent `Geom`).
     ///
@@ -292,6 +292,7 @@ pub type EdgeId = (u64, u64);
 ///
 /// (Math jargon: It is actually a "forest" of disconnected components, rather than a "graph," and
 /// those components form "trees.")
+#[derive(Debug)]
 pub struct Graph {
     /// Contains all of the `Geom`s in the forest
     pub nodes: BTreeMap<NodeId, Geom>,
@@ -314,16 +315,15 @@ impl Graph {
     }
 }
 
-fn scan_ptr(s: &str) -> Result<u64, crate::Error> {
-    let p = scan_fmt!(s, "{x}", [hex u64])
-        .map_err(|e| crate::Error::Scan(e))?;
+fn scan_ptr(s: &str) -> Result<u64, Error> {
+    let p = scan_fmt!(s, "{x}", [hex u64])?;
     return Ok(p)
 }
 
 // XXX double check that all providers are attached to a consumer, but I think they are via DEV.
 /// Converts a logical GEOM forest from the unprocessed, `geom::raw::Mesh` format to the more
 /// convenient and strongly-typed `geom::Graph` format.
-pub fn decode_graph(mesh: &raw::Mesh) -> Result<Graph, crate::Error> {
+pub fn decode_graph(mesh: &raw::Mesh) -> Result<Graph, Error> {
     let mut result = Graph::new();
 
     // First pass: create nodes; temp: collect consumers, producers, and their pairs.
@@ -332,39 +332,36 @@ pub fn decode_graph(mesh: &raw::Mesh) -> Result<Graph, crate::Error> {
     let mut conprods: BTreeSet<EdgeId> = BTreeSet::new();
 
     for class in &mesh.classes {
-        let classkind = GeomClass::from_str(&class.name)
-            .map_err(|e| crate::Error::Parse(e))?;
+        let classkind = GeomClass::from_str(&class.name)?;
 
         for geom in &class.geoms {
             let geom_id = scan_ptr(&geom.id)?;
             let mut config = None;
             if classkind == GeomClass::PART {
                 let rawconfig = &geom.config.as_ref()
-                    .ok_or(crate::Error::Graph(GraphError))?;
+                    .ok_or(Error::GraphError)?;
                 let partscheme = PartScheme::from_str(&rawconfig.scheme
                     .as_ref()
-                    .ok_or(crate::Error::Graph(GraphError))?)
-                    .map_err(|e| crate::Error::Parse(e))?;
+                    .ok_or(Error::GraphError)?)?;
                 let partstate = PartState::from_str(&rawconfig.state
                     .as_ref()
-                    .ok_or(crate::Error::Graph(GraphError))?)
-                    .map_err(|e| crate::Error::Parse(e))?;
+                    .ok_or(Error::GraphError)?)?;
 
                 config = Some(Box::new(PartMetadata {
                     scheme: partscheme,
                     state: partstate,
                     entries:
-                        rawconfig.entries.ok_or(crate::Error::Graph(GraphError))?,
+                        rawconfig.entries.ok_or(Error::GraphError)?,
                     first:
-                        rawconfig.first.ok_or(crate::Error::Graph(GraphError))?,
+                        rawconfig.first.ok_or(Error::GraphError)?,
                     last:
-                        rawconfig.last.ok_or(crate::Error::Graph(GraphError))?,
+                        rawconfig.last.ok_or(Error::GraphError)?,
                     fwsectors:
-                        rawconfig.fwsectors.ok_or(crate::Error::Graph(GraphError))?,
+                        rawconfig.fwsectors.ok_or(Error::GraphError)?,
                     fwheads:
-                        rawconfig.fwheads.ok_or(crate::Error::Graph(GraphError))?,
+                        rawconfig.fwheads.ok_or(Error::GraphError)?,
                     modified:
-                        rawconfig.modified.ok_or(crate::Error::Graph(GraphError))?,
+                        rawconfig.modified.ok_or(Error::GraphError)?,
                 }));
             }
             result.nodes.insert(geom_id, Geom {
@@ -390,15 +387,15 @@ pub fn decode_graph(mesh: &raw::Mesh) -> Result<Graph, crate::Error> {
 
     // Second pass: create Con-Prov Edges; fill inedges, outedges.
     for (cid, pid) in &conprods {
-        let rawcons = cons.get(&cid).ok_or(crate::Error::Graph(GraphError))?;
-        let rawprov = provs.get(&pid).ok_or(crate::Error::Graph(GraphError))?;
+        let rawcons = cons.get(&cid).ok_or(Error::GraphError)?;
+        let rawprov = provs.get(&pid).ok_or(Error::GraphError)?;
         if &rawcons.mode != &rawprov.mode {
-            return Err(crate::Error::Graph(GraphError));
+            return Err(Error::GraphError);
         }
 
         // Geom associated with the provider in this pair.
         let provgeom_id = scan_ptr(&rawprov.geom_ref.ref_)?;
-        let provgeom = result.nodes.get(&provgeom_id).ok_or(crate::Error::Graph(GraphError))?;
+        let provgeom = result.nodes.get(&provgeom_id).ok_or(Error::GraphError)?;
 
         let edge = Edge {
             name: rawprov.name.to_owned(),
