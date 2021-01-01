@@ -1,3 +1,6 @@
+/// This is the uncleaned result of XML deserialization.  You probably want the objects and methods
+/// in the `geom::graph` module instead.
+
 extern crate serde;
 
 //use serde::{de::Error, Deserialize, Deserializer};
