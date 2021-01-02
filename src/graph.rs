@@ -281,6 +281,11 @@ pub struct Edge {
     pub stripeoffset: u64,
     /// Metadata for `Edge`s descending from `DISK`, `PART`, or `LABEL` `Geom`s.
     pub metadata: Option<Box<EdgeMetadata>>,
+
+    /// Child, or consumer `Geom`.
+    pub consumer_geom: NodeId,
+    /// Parent, or provider `Geom`.
+    pub provider_geom: NodeId,
 }
 
 /// A unique identifier for a `Geom` in a `Graph`.
@@ -311,6 +316,115 @@ impl Graph {
             edges: BTreeMap::new(),
             outedges: BTreeMap::new(),
             inedges: BTreeMap::new(),
+        }
+    }
+
+    /// Returns an `Iterator` which yields each `(&NodeId, &Geom)` for roots (i.e., `rank` 1).
+    pub fn roots_iter(&self) -> RootsIter {
+        RootsIter { iter: self.nodes.iter() }
+    }
+
+    /// Given the `NodeId` of a `Geom`, returns an `Iterator` which yields each `EdgeId` descending
+    /// from the node.
+    pub fn child_edgeids_iter(&self, id: &NodeId) -> ChildEdgeIdsIter {
+        let v = self.inedges.get(&id);
+        ChildEdgeIdsIter {
+            iter: match v {
+                Some(edges) => Some(edges.iter()),
+                None => None,
+            }
+        }
+    }
+
+    /// Given the `NodeId` of a `Geom`, returns an `Iterator` which yields each `(&EdgeId, &Edge)`
+    /// descending from the node.
+    pub fn child_edges_iter(&self, id: &NodeId) -> ChildEdgesIter {
+        ChildEdgesIter {
+            edges: &self.edges,
+            iter: self.child_edgeids_iter(id),
+        }
+    }
+
+    /// Given the `NodeId` of a Geom`, returns an `Iterator` which yields each `(&EdgeId, &Edge,
+    /// &Geom)` descending from the node.
+    pub fn child_geoms_iter(&self, id: &NodeId) -> ChildGeomsIter {
+        ChildGeomsIter {
+            nodes: &self.nodes,
+            iter: self.child_edges_iter(id),
+        }
+    }
+}
+
+#[derive(Debug)]
+pub struct RootsIter<'a> {
+    iter: std::collections::btree_map::Iter<'a, NodeId, Geom>,
+}
+
+impl<'a> Iterator for RootsIter<'a> {
+    type Item = (&'a NodeId, &'a Geom);
+
+    fn next(&mut self) -> Option<Self::Item> {
+        loop {
+            let next = self.iter.next();
+            if next.is_none() {
+                return next;
+            }
+            if let Some(kv) = next {
+                if kv.1.rank == 1 {
+                    return next;
+                }
+            }
+        }
+    }
+}
+
+#[derive(Debug)]
+pub struct ChildEdgeIdsIter<'a> {
+    iter: Option<std::slice::Iter<'a, EdgeId>>,
+}
+
+impl<'a> Iterator for ChildEdgeIdsIter<'a> {
+    type Item = &'a EdgeId;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match &mut self.iter {
+            None => None,
+            Some(iter) => iter.next(),
+        }
+    }
+}
+
+#[derive(Debug)]
+pub struct ChildEdgesIter<'a> {
+    edges: &'a BTreeMap<EdgeId, Edge>,
+    iter: ChildEdgeIdsIter<'a>,
+}
+
+impl<'a> Iterator for ChildEdgesIter<'a> {
+    type Item = (&'a EdgeId, &'a Edge);
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match &self.iter.next() {
+            None => None,
+            Some(edgeid) => Some((edgeid, self.edges.get(edgeid).unwrap())),
+        }
+    }
+}
+
+#[derive(Debug)]
+pub struct ChildGeomsIter<'a> {
+    nodes: &'a BTreeMap<NodeId, Geom>,
+    iter: ChildEdgesIter<'a>,
+}
+
+impl<'a> Iterator for ChildGeomsIter<'a> {
+    type Item = (&'a EdgeId, &'a Edge, &'a Geom);
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match &self.iter.next() {
+            None => None,
+            Some((edgeid, edge)) =>
+                Some((edgeid, edge, self.nodes.get(&edge.consumer_geom).unwrap())),
         }
     }
 }
@@ -399,6 +513,8 @@ pub fn decode_graph(mesh: &raw::Mesh) -> Result<Graph, Error> {
         // Geom associated with the provider in this pair.
         let provgeom_id = scan_ptr(&rawprov.geom_ref.ref_)?;
         let provgeom = result.nodes.get(&provgeom_id).ok_or(Error::GraphError)?;
+        // And consumer.
+        let consgeom_id = scan_ptr(&rawcons.geom_ref.ref_)?;
 
         let edge = Edge {
             name: rawprov.name.to_owned(),
@@ -412,7 +528,9 @@ pub fn decode_graph(mesh: &raw::Mesh) -> Result<Graph, Error> {
                 GeomClass::PART => Some(EdgeMetadata::part_from_raw(rawprov)?),
                 GeomClass::LABEL => Some(EdgeMetadata::label_from_raw(rawprov)?),
                 _ => None,
-            }
+            },
+            consumer_geom: consgeom_id,
+            provider_geom: provgeom_id,
         };
 
         let edge_id = (*cid, *pid);
@@ -421,7 +539,6 @@ pub fn decode_graph(mesh: &raw::Mesh) -> Result<Graph, Error> {
         let invec = result.inedges.entry(provgeom_id).or_insert(Vec::new());
         (*invec).push(edge_id);
 
-        let consgeom_id = scan_ptr(&rawcons.geom_ref.ref_)?;
         let outvec = result.outedges.entry(consgeom_id).or_insert(Vec::new());
         (*outvec).push(edge_id);
     }
@@ -432,11 +549,21 @@ pub fn decode_graph(mesh: &raw::Mesh) -> Result<Graph, Error> {
 #[cfg(test)]
 mod tests {
     use crate::{raw, graph};
+    const SAMPLE_XML: &str = include_str!("test/fullsample.xml");
 
     #[test]
     fn large_sample_decode() {
-        let xml = include_str!("test/fullsample.xml");
-        let rawmesh = raw::parse_xml(&xml).unwrap();
+        let rawmesh = raw::parse_xml(&SAMPLE_XML).unwrap();
+        graph::decode_graph(&rawmesh).unwrap();
+    }
+
+    #[test]
+    fn roots_iterator() {
+        let rawmesh = raw::parse_xml(&SAMPLE_XML).unwrap();
         let g = graph::decode_graph(&rawmesh).unwrap();
+
+        for (_, root) in g.roots_iter() {
+            assert_eq!(root.class, graph::GeomClass::DISK);
+        }
     }
 }

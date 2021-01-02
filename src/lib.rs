@@ -50,4 +50,4 @@ pub mod structs;
 
 pub use error::Error;
 pub use structs as raw;
-pub use graph::Graph;
+pub use graph::{Graph,Edge,NodeId,EdgeId,EdgeMetadata,Mode,PartMetadata,PartState,PartScheme,GeomClass,Geom};
