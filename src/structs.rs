@@ -1,12 +1,11 @@
-/// This is the uncleaned result of XML deserialization.  You probably want the objects and methods
-/// in the `geom::graph` module instead.
-
+//! This is the uncleaned result of XML deserialization.  You probably want the objects and methods
+//! in the `geom::graph` module instead.
 extern crate serde;
 
 //use serde::{de::Error, Deserialize, Deserializer};
 use serde::Deserialize;
 
-use crate::Error as Error;
+use crate::Error;
 
 /// A `Mesh` is the top-level structure representing a GEOM object graph.
 ///
@@ -260,14 +259,19 @@ mod tests {
                         <mode>r0w0e0</mode>
                     </consumer>"#;
         let p = quick_xml::de::from_str::<structs::Consumer>(xml).unwrap();
-        assert_eq!(p,
-                   structs::Consumer {
-                       id: "0x123".into(),
-                       geom_ref: structs::GeomRef { ref_: "0x456".into() },
-                       provider_ref: structs::ProviderRef { ref_: "0x789".into() },
-                       mode: "r0w0e0".into(),
-                   });
-
+        assert_eq!(
+            p,
+            structs::Consumer {
+                id: "0x123".into(),
+                geom_ref: structs::GeomRef {
+                    ref_: "0x456".into()
+                },
+                provider_ref: structs::ProviderRef {
+                    ref_: "0x789".into()
+                },
+                mode: "r0w0e0".into(),
+            }
+        );
     }
 
     #[test]
@@ -282,29 +286,31 @@ mod tests {
                         <descr>Samsung SSD</descr>
                     </config>"#;
         let p = quick_xml::de::from_str::<structs::ProviderConfig>(xml).unwrap();
-        assert_eq!(p,
-                   structs::ProviderConfig {
-                       fwheads: Some(1),
-                       fwsectors: Some(2),
-                       rotationrate: Some(0),
-                       ident: Some("S3Z".into()),
-                       lunid: Some("00123abcd".into()),
-                       descr: Some("Samsung SSD".into()),
-                       // PART fields
-                       start: None,
-                       end: None,
-                       index: None,
-                       type_: None,
-                       offset: None,
-                       length: None,
-                       label: None,
-                       rawtype: None,
-                       rawuuid: None,
-                       efimedia: None,
-                       // LABEL fields
-                       seclength: None,
-                       secoffset: None,
-                   });
+        assert_eq!(
+            p,
+            structs::ProviderConfig {
+                fwheads: Some(1),
+                fwsectors: Some(2),
+                rotationrate: Some(0),
+                ident: Some("S3Z".into()),
+                lunid: Some("00123abcd".into()),
+                descr: Some("Samsung SSD".into()),
+                // PART fields
+                start: None,
+                end: None,
+                index: None,
+                type_: None,
+                offset: None,
+                length: None,
+                label: None,
+                rawtype: None,
+                rawuuid: None,
+                efimedia: None,
+                // LABEL fields
+                seclength: None,
+                secoffset: None,
+            }
+        );
     }
 
     #[test]
@@ -328,7 +334,12 @@ mod tests {
                     </provider>"#;
         let p = quick_xml::de::from_str::<structs::Provider>(xml).unwrap();
         assert_eq!(p.id, "0x123");
-        assert_eq!(p.geom_ref, structs::GeomRef { ref_: "0x456".into() });
+        assert_eq!(
+            p.geom_ref,
+            structs::GeomRef {
+                ref_: "0x456".into()
+            }
+        );
         assert_eq!(p.mode, "r1w1e3");
         assert_eq!(p.name, "ada0");
         assert_eq!(p.mediasize, 10);
@@ -347,26 +358,29 @@ mod tests {
                         </config>
                     </geom>"#;
         let p = quick_xml::de::from_str::<structs::Geom>(xml).unwrap();
-        assert_eq!(p,
-                   structs::Geom {
-                       id: "0x123".into(),
-                       class_ref: structs::ClassRef { ref_: "0x456".into() },
-                       name: "ada0".into(),
-                       rank: 1,
-                       config: Some(structs::GeomConfig {
-                           scheme: None,
-                           entries: None,
-                           first: None,
-                           last: None,
-                           fwsectors: None,
-                           fwheads: None,
-                           state: None,
-                           modified: None,
-                       }),
-                       consumers: vec![],
-                       providers: vec![],
-                   });
-
+        assert_eq!(
+            p,
+            structs::Geom {
+                id: "0x123".into(),
+                class_ref: structs::ClassRef {
+                    ref_: "0x456".into()
+                },
+                name: "ada0".into(),
+                rank: 1,
+                config: Some(structs::GeomConfig {
+                    scheme: None,
+                    entries: None,
+                    first: None,
+                    last: None,
+                    fwsectors: None,
+                    fwheads: None,
+                    state: None,
+                    modified: None,
+                }),
+                consumers: vec![],
+                providers: vec![],
+            }
+        );
     }
 
     #[test]
@@ -379,23 +393,31 @@ mod tests {
         assert_eq!(p.classes[1].name, "RAID");
 
         assert_eq!(p.classes[2].name, "DISK");
-        assert_eq!(p.classes[2].id,
-                   p.classes[2].geoms[0].class_ref.ref_);
-        assert_eq!(p.classes[2].geoms[0].id,
-                   p.classes[2].geoms[0].providers[0].geom_ref.ref_);
+        assert_eq!(p.classes[2].id, p.classes[2].geoms[0].class_ref.ref_);
+        assert_eq!(
+            p.classes[2].geoms[0].id,
+            p.classes[2].geoms[0].providers[0].geom_ref.ref_
+        );
         assert_eq!(p.classes[2].geoms[0].providers[0].mediasize, 1000204886016);
-        assert_eq!(p.classes[2].geoms[0].providers[0].config.lunid.as_ref().unwrap(),
-                   "YYYYYYYYYYYYYYYY");
+        assert_eq!(
+            p.classes[2].geoms[0].providers[0]
+                .config
+                .lunid
+                .as_ref()
+                .unwrap(),
+            "YYYYYYYYYYYYYYYY"
+        );
         assert_eq!(p.classes[2].geoms[1].name, "nvd1");
 
         assert_eq!(p.classes[3].name, "DEV");
-        assert_eq!(p.classes[3].id,
-                   p.classes[3].geoms[0].class_ref.ref_);
+        assert_eq!(p.classes[3].id, p.classes[3].geoms[0].class_ref.ref_);
         assert_eq!(p.classes[3].geoms[1].name, "ada0p1");
 
         // DEV consumer -> PART provider
-        assert_eq!(p.classes[3].geoms[1].consumers[0].provider_ref.ref_,
-                   p.classes[4].geoms[0].providers[0].id);
+        assert_eq!(
+            p.classes[3].geoms[1].consumers[0].provider_ref.ref_,
+            p.classes[4].geoms[0].providers[0].id
+        );
 
         assert_eq!(p.classes[4].name, "PART");
         assert_eq!(p.classes[5].name, "LABEL");

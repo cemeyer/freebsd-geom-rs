@@ -2,7 +2,7 @@ use std;
 use strum_macros::AsRefStr;
 
 /// Wrapped error sources for the geom crate.
-#[derive(Debug,AsRefStr)]
+#[derive(Debug, AsRefStr)]
 pub enum Error {
     Sysctl(sysctl::SysctlError),
     Decode(quick_xml::DeError),
@@ -42,10 +42,10 @@ impl std::fmt::Display for Error {
         return match self {
             Self::Sysctl(e) => write!(f, ": {}", e),
             Self::Decode(e) => write!(f, ": {}", e),
-            Self::Parse(e)  => write!(f, ": {}", e),
-            Self::Scan(e)   => write!(f, ": {}", e),
+            Self::Parse(e) => write!(f, ": {}", e),
+            Self::Scan(e) => write!(f, ": {}", e),
             Self::GraphError => Ok(()),
-        }
+        };
     }
 }
 

@@ -1,15 +1,16 @@
-/// The GEOM subsystem of FreeBSD is an abstraction of storage topology inside the kernel.
-///
-/// In math jargon, it is a "forest" of disconnected trees.  The root(s) of these trees are
-/// individual `Geom` objects of class `GeomClass::DISK` or similar (e.g., `MD` — Memory Disk).
-///
-/// The leaves of the trees are `Geom` objects of type `GeomClass::DEV`, which are responsible for
-/// constructing the virtual files present in `/dev`.
-
-use std::collections::{BTreeMap,BTreeSet};
-use std::str::FromStr;
-use strum_macros::{AsRefStr,EnumIter,EnumString};
-use crate::{Error, raw};
+//! The GEOM subsystem of FreeBSD is an abstraction of storage topology inside the kernel.
+//!
+//! In math jargon, it is a "forest" of disconnected trees.  The root(s) of these trees are
+//! individual `Geom` objects of class `GeomClass::DISK` or similar (e.g., `MD` — Memory Disk).
+//!
+//! The leaves of the trees are `Geom` objects of type `GeomClass::DEV`, which are responsible for
+//! constructing the virtual files present in `/dev`.
+use crate::{raw, Error};
+use std::{
+    collections::{BTreeMap, BTreeSet},
+    str::FromStr,
+};
+use strum_macros::{AsRefStr, EnumIter, EnumString};
 
 /// A `Geom` is the essential object in a GEOM graph.
 ///
@@ -35,7 +36,7 @@ pub struct Geom {
 }
 
 /// The class of a `Geom`.
-#[derive(Copy,Clone,Debug,Eq,PartialEq,AsRefStr,EnumIter,EnumString)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, AsRefStr, EnumIter, EnumString)]
 pub enum GeomClass {
     /// Floppy Disk
     FD,
@@ -57,7 +58,7 @@ pub enum GeomClass {
 }
 
 /// Specific partition schemes for `GeomClass::PART` geom `PartMetadata`.
-#[derive(AsRefStr,Debug,EnumIter,EnumString)]
+#[derive(AsRefStr, Debug, EnumIter, EnumString)]
 pub enum PartScheme {
     /// Apple Partition Map (historical)
     APM,
@@ -88,7 +89,7 @@ pub enum PartScheme {
 ///   other can be recovered.
 /// * EBR scheme: An internal inconsistency exists in EBR's metadata.
 /// * Any scheme: There is some internal inconsistency, such as overlapping partitions.
-#[derive(AsRefStr,Debug,EnumIter,EnumString)]
+#[derive(AsRefStr, Debug, EnumIter, EnumString)]
 pub enum PartState {
     CORRUPT,
     OK,
@@ -141,7 +142,7 @@ impl std::str::FromStr for Mode {
 ///
 /// The enum variant depends on the `GeomClass` of the `Geom` associated with the "provider"
 /// represented by this `Edge`.
-#[derive(AsRefStr,Debug,EnumIter,EnumString)]
+#[derive(AsRefStr, Debug, EnumIter, EnumString)]
 pub enum EdgeMetadata {
     /// `EdgeMetadata::DISK` is metadata associated with the `Edge` between a `GeomClass::DISK`
     /// `Geom` and some lower `Geom` in the tree.
@@ -240,9 +241,9 @@ impl EdgeMetadata {
             offset: raw.offset.ok_or(Error::GraphError)?,
             length: raw.length.ok_or(Error::GraphError)?,
 
-            label:       raw.label.as_ref().map(|v| v.to_owned()),
-            rawtype:   raw.rawtype.as_ref().map(|v| v.to_owned()),
-            rawuuid:   raw.rawuuid.as_ref().map(|v| v.to_owned()),
+            label: raw.label.as_ref().map(|v| v.to_owned()),
+            rawtype: raw.rawtype.as_ref().map(|v| v.to_owned()),
+            rawuuid: raw.rawuuid.as_ref().map(|v| v.to_owned()),
             efimedia: raw.efimedia.as_ref().map(|v| v.to_owned()),
         }))
     }
@@ -321,7 +322,9 @@ impl Graph {
 
     /// Returns an `Iterator` which yields each `(&NodeId, &Geom)` for roots (i.e., `rank` 1).
     pub fn roots_iter(&self) -> RootsIter {
-        RootsIter { iter: self.nodes.iter() }
+        RootsIter {
+            iter: self.nodes.iter(),
+        }
     }
 
     /// Given the `NodeId` of a `Geom`, returns an `Iterator` which yields each `EdgeId` descending
@@ -332,7 +335,7 @@ impl Graph {
             iter: match v {
                 Some(edges) => Some(edges.iter()),
                 None => None,
-            }
+            },
         }
     }
 
@@ -423,15 +426,16 @@ impl<'a> Iterator for ChildGeomsIter<'a> {
     fn next(&mut self) -> Option<Self::Item> {
         match &self.iter.next() {
             None => None,
-            Some((edgeid, edge)) =>
-                Some((edgeid, edge, self.nodes.get(&edge.consumer_geom).unwrap())),
+            Some((edgeid, edge)) => {
+                Some((edgeid, edge, self.nodes.get(&edge.consumer_geom).unwrap()))
+            }
         }
     }
 }
 
 fn scan_ptr(s: &str) -> Result<u64, Error> {
     let p = scan_fmt!(s, "{x}", [hex u64])?;
-    return Ok(p)
+    return Ok(p);
 }
 
 // XXX double check that all providers are attached to a consumer, but I think they are via DEV.
@@ -452,38 +456,32 @@ pub fn decode_graph(mesh: &raw::Mesh) -> Result<Graph, Error> {
             let geom_id = scan_ptr(&geom.id)?;
             let mut config = None;
             if classkind == GeomClass::PART {
-                let rawconfig = &geom.config.as_ref()
-                    .ok_or(Error::GraphError)?;
-                let partscheme = PartScheme::from_str(&rawconfig.scheme
-                    .as_ref()
-                    .ok_or(Error::GraphError)?)?;
-                let partstate = PartState::from_str(&rawconfig.state
-                    .as_ref()
-                    .ok_or(Error::GraphError)?)?;
+                let rawconfig = &geom.config.as_ref().ok_or(Error::GraphError)?;
+                let partscheme =
+                    PartScheme::from_str(&rawconfig.scheme.as_ref().ok_or(Error::GraphError)?)?;
+                let partstate =
+                    PartState::from_str(&rawconfig.state.as_ref().ok_or(Error::GraphError)?)?;
 
                 config = Some(Box::new(PartMetadata {
                     scheme: partscheme,
                     state: partstate,
-                    entries:
-                        rawconfig.entries.ok_or(Error::GraphError)?,
-                    first:
-                        rawconfig.first.ok_or(Error::GraphError)?,
-                    last:
-                        rawconfig.last.ok_or(Error::GraphError)?,
-                    fwsectors:
-                        rawconfig.fwsectors.ok_or(Error::GraphError)?,
-                    fwheads:
-                        rawconfig.fwheads.ok_or(Error::GraphError)?,
-                    modified:
-                        rawconfig.modified.ok_or(Error::GraphError)?,
+                    entries: rawconfig.entries.ok_or(Error::GraphError)?,
+                    first: rawconfig.first.ok_or(Error::GraphError)?,
+                    last: rawconfig.last.ok_or(Error::GraphError)?,
+                    fwsectors: rawconfig.fwsectors.ok_or(Error::GraphError)?,
+                    fwheads: rawconfig.fwheads.ok_or(Error::GraphError)?,
+                    modified: rawconfig.modified.ok_or(Error::GraphError)?,
                 }));
             }
-            result.nodes.insert(geom_id, Geom {
-                class: classkind,
-                name: geom.name.to_owned(),
-                rank: geom.rank,
-                metadata: config,
-            });
+            result.nodes.insert(
+                geom_id,
+                Geom {
+                    class: classkind,
+                    name: geom.name.to_owned(),
+                    rank: geom.rank,
+                    metadata: config,
+                },
+            );
 
             for c in &geom.consumers {
                 let cons_id = scan_ptr(&c.id)?;
@@ -548,7 +546,7 @@ pub fn decode_graph(mesh: &raw::Mesh) -> Result<Graph, Error> {
 
 #[cfg(test)]
 mod tests {
-    use crate::{raw, graph};
+    use crate::{graph, raw};
     const SAMPLE_XML: &str = include_str!("test/fullsample.xml");
 
     #[test]

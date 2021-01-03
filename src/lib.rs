@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 
-#[macro_use] extern crate scan_fmt;
+#[macro_use]
+extern crate scan_fmt;
 extern crate sysctl;
 
 use sysctl::Sysctl;
@@ -49,5 +50,8 @@ mod graph;
 pub mod structs;
 
 pub use error::Error;
+pub use graph::{
+    Edge, EdgeId, EdgeMetadata, Geom, GeomClass, Graph, Mode, NodeId, PartMetadata, PartScheme,
+    PartState,
+};
 pub use structs as raw;
-pub use graph::{Graph,Edge,NodeId,EdgeId,EdgeMetadata,Mode,PartMetadata,PartState,PartScheme,GeomClass,Geom};
