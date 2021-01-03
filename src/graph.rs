@@ -356,6 +356,20 @@ impl Graph {
             iter: self.child_edges_iter(id),
         }
     }
+
+    /// Given the `NodeId` of a Geom`, iterate every Geom descending from it.
+    pub fn descendents_iter<'a>(
+        &'a self,
+        id: &NodeId,
+    ) -> Box<dyn Iterator<Item = (&'a EdgeId, &'a Edge, &'a Geom)> + 'a> {
+        Box::new(
+            self.child_geoms_iter(id).chain(
+                self.child_geoms_iter(id)
+                    .map(move |(_, e, _)| self.descendents_iter(&e.consumer_geom))
+                    .flatten(),
+            ),
+        )
+    }
 }
 
 #[derive(Debug)]
@@ -563,5 +577,54 @@ mod tests {
         for (_, root) in g.roots_iter() {
             assert_eq!(root.class, graph::GeomClass::DISK);
         }
+    }
+
+    #[test]
+    fn recursive_iterator() {
+        let rawmesh = raw::parse_xml(&SAMPLE_XML).unwrap();
+        let g = graph::decode_graph(&rawmesh).unwrap();
+
+        // Look for SWAP geoms; there should be exactly one.
+        let swap_geoms = g
+            .roots_iter()
+            .map(|(id, _)| g.descendents_iter(id))
+            .flatten()
+            .filter_map(|(_, _, n)| {
+                if n.class == graph::GeomClass::SWAP {
+                    Some(n)
+                } else {
+                    None
+                }
+            })
+            .collect::<Vec<_>>();
+        assert_eq!(swap_geoms.len(), 1);
+        assert_eq!(swap_geoms[0].class, graph::GeomClass::SWAP);
+        assert_eq!(swap_geoms[0].name, "swap");
+        assert_eq!(swap_geoms[0].rank, 4);
+
+        // Check that the iterator did not consume `g`.
+        let ada0_geoms = g
+            .roots_iter()
+            .map(|(id, _)| g.descendents_iter(id))
+            .flatten()
+            .filter(|(_, _, n)| n.name == "ada0")
+            .map(|(_, _, n)| n)
+            .collect::<Vec<_>>();
+        // DISK ada0, PART table ada0, and DEV ada0.
+        // But we only look at descendents of roots, and DISKs are roots, so we should only find
+        // the PART and DEV.
+        assert_eq!(ada0_geoms.len(), 2);
+        let ada0_part = ada0_geoms
+            .iter()
+            .filter(|g| g.class == graph::GeomClass::PART)
+            .next()
+            .unwrap();
+        let ada0_dev = ada0_geoms
+            .iter()
+            .filter(|g| g.class == graph::GeomClass::DEV)
+            .next()
+            .unwrap();
+        assert_eq!(ada0_part.rank, 2);
+        assert_eq!(ada0_dev.rank, 2);
     }
 }
