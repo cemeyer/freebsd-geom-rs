@@ -348,7 +348,7 @@ impl Graph {
         }
     }
 
-    /// Given the `NodeId` of a Geom`, returns an `Iterator` which yields each `(&EdgeId, &Edge,
+    /// Given the `NodeId` of a `Geom`, returns an `Iterator` which yields each `(&EdgeId, &Edge,
     /// &Geom)` descending from the node.
     pub fn child_geoms_iter(&self, id: &NodeId) -> ChildGeomsIter {
         ChildGeomsIter {
@@ -357,7 +357,7 @@ impl Graph {
         }
     }
 
-    /// Given the `NodeId` of a Geom`, iterate every Geom descending from it.
+    /// Given the `NodeId` of a `Geom`, iterate every Geom descending from it.
     pub fn descendents_iter<'a>(
         &'a self,
         id: &NodeId,
