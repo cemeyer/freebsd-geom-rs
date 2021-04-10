@@ -224,7 +224,12 @@ impl EdgeMetadata {
         Ok(Box::new(Self::DISK {
             fwheads: raw.fwheads.ok_or(Error::GraphError)?,
             fwsectors: raw.fwsectors.ok_or(Error::GraphError)?,
-            rotationrate: raw.rotationrate.ok_or(Error::GraphError)?,
+            rotationrate: raw
+                .rotationrate
+                .as_ref()
+                .ok_or(Error::GraphError)?
+                .parse::<u64>()
+                .unwrap_or(0),
             ident: raw.ident.as_ref().ok_or(Error::GraphError)?.to_owned(),
             lunid: raw.lunid.as_ref().ok_or(Error::GraphError)?.to_owned(),
             descr: raw.descr.as_ref().ok_or(Error::GraphError)?.to_owned(),

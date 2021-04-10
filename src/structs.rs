@@ -125,7 +125,7 @@ pub struct ProviderConfig {
     // DISK
     pub fwheads: Option<u64>,
     pub fwsectors: Option<u64>,
-    pub rotationrate: Option<u64>,
+    pub rotationrate: Option<String>,
     pub ident: Option<String>,
     pub lunid: Option<String>,
     pub descr: Option<String>,
@@ -291,7 +291,7 @@ mod tests {
             structs::ProviderConfig {
                 fwheads: Some(1),
                 fwsectors: Some(2),
-                rotationrate: Some(0),
+                rotationrate: Some("0".into()),
                 ident: Some("S3Z".into()),
                 lunid: Some("00123abcd".into()),
                 descr: Some("Samsung SSD".into()),
