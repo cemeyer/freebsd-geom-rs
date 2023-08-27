@@ -55,6 +55,11 @@ pub enum GeomClass {
     Flashmap,
     /// A Memory Disk (virtual device)
     MD,
+    ELI,
+    #[strum(serialize = "ZFS::ZVOL")]
+    ZFSZVOL,
+    #[strum(serialize = "ZFS::VDEV")]
+    ZFSVDEV,
 }
 
 /// Specific partition schemes for `GeomClass::PART` geom `PartMetadata`.
